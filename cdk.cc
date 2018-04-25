@@ -1,19 +1,71 @@
 /* Arin Chase Faggard acf150430 | cs3377.502 Perkins */
 
 #include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <sstream>
+#include <string>
+#include <stdint.h>
 #include "cdk.h"
 
 
-#define MATRIX_WIDTH 4
-#define MATRIX_HEIGHT 3
-#define BOX_WIDTH 15
+#define MATRIX_WIDTH 3
+#define MATRIX_HEIGHT 5
+#define BOX_WIDTH 25
 #define MATRIX_NAME_STRING "Test Matrix"
 
 using namespace std;
 
 
+class BinaryFileRecord {
+public:
+  int myVal;
+  int version;
+  int numRecords;
+  int len1;
+  char str1[10];
+  int len2;
+  char str2[10];
+  int len3;
+  char str3[16];
+};
+
+
 int main()
 {
+  /* Binary I/O */
+  BinaryFileRecord *myRecord = new BinaryFileRecord();
+  ifstream binInfile ("cs3377.bin", ios::in | ios::binary);
+  // binInfile.read((char *) myRecord, sizeof(BinaryFileRecord));
+  binInfile.close();
+  stringstream stream;
+  stream << hex << myRecord->myVal;
+  string magicNumber("magic: 0x" + stream.str());
+  stream.str("");
+  stream << myRecord->version;
+  string version_str("version: " + stream.str());
+  stream.str("");
+  stream << myRecord->numRecords;
+  string numRecords_str("NumRecords: " + stream.str());
+  stream.str("");
+  stream << myRecord->len1;
+  string len1_str("Length: " + stream.str());
+  stream.str("");
+  stream << myRecord->str1;
+  string str1_str(stream.str());
+  stream.str("");
+  stream << myRecord->len2;
+  string len2_str("Length: " + stream.str());
+  stream.str("");
+  stream << myRecord->str2;
+  string str2_str(stream.str());
+  stream.str("");
+  stream << myRecord->len3;
+  string len3_str("Length: " + stream.str());
+  stream.str("");
+  stream << myRecord->str3;
+  string str3_str(stream.str());
+
 
   WINDOW *window;
   CDKSCREEN *cdkscreen;
@@ -62,7 +114,15 @@ int main()
   /*
    * Dipslay a message
    */
-  setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
+  setCDKMatrixCell(myMatrix, 1, 1,magicNumber.c_str());
+  setCDKMatrixCell(myMatrix, 1, 2,version_str.c_str());
+  setCDKMatrixCell(myMatrix, 1, 3,numRecords_str.c_str());
+  setCDKMatrixCell(myMatrix, 2, 1,len1_str.c_str());
+  setCDKMatrixCell(myMatrix, 2, 2,str1_str.c_str());
+  setCDKMatrixCell(myMatrix, 3, 1,len2_str.c_str());
+  setCDKMatrixCell(myMatrix, 3, 2,str2_str.c_str());
+  setCDKMatrixCell(myMatrix, 4, 1,len3_str.c_str());
+  setCDKMatrixCell(myMatrix, 4, 2,str3_str.c_str());
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* So we can see results, pause until a key is pressed. */
